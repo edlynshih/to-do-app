@@ -46,7 +46,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="task-container">
-        <h1>My Projects</h1>
+        <h1>My Projects!!</h1>
 
         {allTasks && uniqueCategories?.map((uniqueCategory, uniqueCategoryIndex) => (
           <div key={uniqueCategoryIndex}>
