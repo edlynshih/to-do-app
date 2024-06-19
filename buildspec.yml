@@ -5,29 +5,28 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - FRONTEND_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$FRONTEND_IMAGE_REPO_NAME
-      - BACKEND_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$BACKEND_IMAGE_REPO_NAME
+      - aws ecr-public get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin public.ecr.aws
   build:
     commands:
       - echo Build started on `date`
       - echo Building the frontend Docker image...
-      - docker build -t $FRONTEND_REPOSITORY_URI:$IMAGE_TAG -f to-do-react/Dockerfile to-do-react/
+      - docker build -t to-do-react:latest -f to-do-react/Dockerfile to-do-react/
       - echo Building the backend Docker image...
-      - docker build -t $BACKEND_REPOSITORY_URI:$IMAGE_TAG -f to-do-api/Dockerfile to-do-api/
+      - docker build -t to-do-api:latest -f to-do-api/Dockerfile to-do-api/
       - echo Tagging the frontend Docker image...
-      - docker tag $FRONTEND_REPOSITORY_URI:$IMAGE_TAG $FRONTEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker tag to-do-react:latest $FRONTEND_IMAGE_REPO_URI:$IMAGE_TAG
       - echo Tagging the backend Docker image...
-      - docker tag $BACKEND_REPOSITORY_URI:$IMAGE_TAG $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker tag to-do-api:latest $BACKEND_IMAGE_REPO_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the frontend Docker image...
-      - docker push $FRONTEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $FRONTEND_IMAGE_REPO_URI:$IMAGE_TAG
       - echo Pushing the backend Docker image...
-      - docker push $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $BACKEND_IMAGE_REPO_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"to-do-react","imageUri":"%s"},{"name":"to-do-api","imageUri":"%s"}]' $FRONTEND_REPOSITORY_URI:$IMAGE_TAG $BACKEND_REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"frontend-container","imageUri":"%s"},{"name":"backend-container","imageUri":"%s"}]' $FRONTEND_IMAGE_REPO_URI:$IMAGE_TAG $BACKEND_IMAGE_REPO_URI:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
-    files: imagedefinitions.json
+  files:
+    - imagedefinitions.json
