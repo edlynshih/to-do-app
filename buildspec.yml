@@ -27,7 +27,7 @@ phases:
       - echo Pushing the backend Docker image...
       - docker push $BACKEND_IMAGE_REPO_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"frontend-container","imageUri":"%s"},{"name":"backend-container","imageUri":"%s"}]' $FRONTEND_IMAGE_REPO_URI:$IMAGE_TAG $BACKEND_IMAGE_REPO_URI:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"ToDoReact","imageUri":"%s"},{"name":"ToDoApi","imageUri":"%s"}]' $FRONTEND_IMAGE_REPO_URI:$IMAGE_TAG $BACKEND_IMAGE_REPO_URI:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
   files:
